@@ -30,7 +30,7 @@ build:
 
     - echo "========================================"
     - echo "Build and push completed"
-    - echo "Image: $IMAGE_TAG"
+    - echo "Image:" "$IMAGE_TAG"
     - echo "========================================"
 
   rules:
