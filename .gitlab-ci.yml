@@ -14,7 +14,7 @@ build:
     - echo "========================================"
     - echo "Building Docker image"
     - echo "========================================"
-    - echo "Image: $IMAGE_TAG"
+    - echo "Image:" "$IMAGE_TAG"
 
     - echo "Docker version:"
     - docker version
