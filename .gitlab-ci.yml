@@ -1,0 +1,39 @@
+stages:
+  - build
+  - deploy
+
+
+variables:
+  IMAGE_TAG: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+
+
+build:
+  stage: build
+
+  script:
+    - echo "Building Docker image:"
+    - echo "$IMAGE_TAG"
+
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+
+    - docker build -t "$IMAGE_TAG" .
+
+    - docker push "$IMAGE_TAG"
+
+
+deploy:
+  stage: deploy
+
+  script:
+    - echo "Deploying $IMAGE_TAG to production"
+
+    - |
+      ssh "$PROD_USER@$PROD_HOST" "
+        docker login -u '$CI_REGISTRY_USER' -p '$CI_REGISTRY_PASSWORD' '$CI_REGISTRY' &&
+        cd /opt/hello-world &&
+        IMAGE='$IMAGE_TAG' docker compose pull &&
+        IMAGE='$IMAGE_TAG' docker compose up -d
+      "
+
+  only:
+    - main
