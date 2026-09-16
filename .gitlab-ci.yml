@@ -9,6 +9,9 @@ variables:
 
 build:
   stage: build
+  image: docker:27
+  tags:
+    - docker
 
   script:
     - echo "Building Docker image:"
