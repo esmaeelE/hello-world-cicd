@@ -1,0 +1,43 @@
+stages:
+  - build
+
+variables:
+  IMAGE_TAG: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+
+build:
+  stage: build
+  image: docker:27
+  tags:
+    - docker
+
+  variables:
+    DOCKER_HOST: "unix:///var/run/docker.sock"
+
+  script:
+    - echo "========================================"
+    - echo "Docker version"
+    - echo "========================================"
+    - docker version
+
+    - echo "========================================"
+    - echo "Docker login"
+    - echo "========================================"
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+
+    - echo "========================================"
+    - echo "Docker build"
+    - echo "========================================"
+    - docker build -t "$IMAGE_TAG" .
+
+    - echo "========================================"
+    - echo "Docker push"
+    - echo "========================================"
+    - docker push "$IMAGE_TAG"
+
+    - echo "========================================"
+    - echo "SUCCESS"
+    - echo "$IMAGE_TAG"
+    - echo "========================================"
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
