@@ -1,11 +1,8 @@
 stages:
   - build
-  - deploy
-
 
 variables:
   IMAGE_TAG: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-
 
 build:
   stage: build
@@ -14,29 +11,28 @@ build:
     - docker
 
   script:
-    - echo "Building Docker image:"
-    - echo "$IMAGE_TAG"
+    - echo "========================================"
+    - echo "Building Docker image"
+    - echo "========================================"
+    - echo "Image: $IMAGE_TAG"
 
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - echo "Docker version:"
+    - docker version
 
+    - echo "Logging in to GitLab Container Registry..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+
+    - echo "Building image..."
     - docker build -t "$IMAGE_TAG" .
 
+    - echo "Pushing image..."
     - docker push "$IMAGE_TAG"
 
+    - echo "========================================"
+    - echo "Build and push completed"
+    - echo "Image: $IMAGE_TAG"
+    - echo "========================================"
 
-deploy:
-  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
-  script:
-    - echo "Deploying $IMAGE_TAG to production"
-
-    - |
-      ssh "$PROD_USER@$PROD_HOST" "
-        docker login -u '$CI_REGISTRY_USER' -p '$CI_REGISTRY_PASSWORD' '$CI_REGISTRY' &&
-        cd /opt/hello-world &&
-        IMAGE='$IMAGE_TAG' docker compose pull &&
-        IMAGE='$IMAGE_TAG' docker compose up -d
-      "
-
-  only:
-    - main
