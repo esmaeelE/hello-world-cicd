@@ -1,0 +1,17 @@
+[project]
+name = "hello-world-cicd"
+version = "0.1.0"
+description = "A minimal Flask application demonstrating GitLab CI/CD with Docker and uv."
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "flask>=3.1,<4",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8,<9",
+]
+
+[tool.uv]
+default-groups = ["dev"]
