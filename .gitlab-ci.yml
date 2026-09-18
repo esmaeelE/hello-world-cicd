@@ -69,7 +69,7 @@ deploy:
     - echo "========================================"
     - echo "Deploy"
     - echo "========================================"
-    - echo "Image: $IMAGE_TAG"
+    - echo "Image:" "$IMAGE_TAG"
 
     - |
       ssh "$DEPLOY_USER@$DEPLOY_HOST" "
