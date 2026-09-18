@@ -5,12 +5,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello World from GitLab CI/CD!\n"
+    return "Hello World from GitLab CI/CD! is changes\n"
 
 
 @app.route("/health")
 def health():
-    return "OK\n"
+    return "OK!!!\n"
 
 
 if __name__ == "__main__":
